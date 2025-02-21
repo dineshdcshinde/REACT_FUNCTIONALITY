@@ -77,31 +77,75 @@ function App() {
 
         <div className="flex w-full">
           <div className="filteredArea w-[15%]  p-2 pl-4">
-            <ul>
-              {[...new Set(products.map((product) => product.category))].map(
-                (uniqueCategory, idx) => {
-                  return (
-                    <li
-                      key={idx}
-                      className="m-2 px-2 py-2 rounded-md bg-slate-500 text-center cursor-pointer transition"
-                      onClick={() => setCategory(uniqueCategory)}
-                    >
-                      {uniqueCategory}
-                    </li>
-                  );
-                }
-              )}
+            <strong className="text-center">Filter By Category - </strong>
+
+            <div className="filterByCategories">
+              <ul>
+                {[...new Set(products.map((product) => product.category))].map(
+                  (uniqueCategory, idx) => {
+                    return (
+                      <li
+                        key={idx}
+                        className="m-2 px-2 py-2 rounded-md bg-slate-500 text-center cursor-pointer transition"
+                        onClick={() => setCategory(uniqueCategory)}
+                      >
+                        {uniqueCategory}
+                      </li>
+                    );
+                  }
+                )}
+                <li
+                  className="m-2 px-2 py-2 rounded-md bg-red-500 text-center cursor-pointer transition"
+                  onClick={() => {
+                    setproductName("");
+                    setPrice("");
+                    setCategory("");
+                  }}
+                >
+                  Clear All
+                </li>
+              </ul>
+            </div>
+            <hr className="mt-4 mb-2" />
+
+            <strong className="text-center">Sort By Price - </strong>
+
+            <div className="filterByPriceSort  w-full">
               <li
-                className="m-2 px-2 py-2 rounded-md bg-red-500 text-center cursor-pointer transition"
+                className="m-2 px-2 py-2 
+                rounded-md bg-blue-500 text-center cursor-pointer transition list-none"
                 onClick={() => {
-                  setproductName("");
-                  setPrice("");
-                  setCategory("");
+                  let sorted = [...filteredProducts].sort(
+                    (a, b) => a.price - b.price
+                  );
+                  setFilteredProducts(sorted);
                 }}
               >
-                Clear All
+                Low to High
               </li>
-            </ul>
+              <li
+                className="m-2 px-2 py-2 
+                rounded-md bg-blue-500 text-center cursor-pointer transition list-none"
+                onClick={() => {
+                  let sorted = [...filteredProducts].sort(
+                    (a, b) => b.price - a.price
+                  );
+                  setFilteredProducts(sorted);
+                }}
+              >
+                High to Low
+              </li>
+
+              <li
+                className="m-2 px-2 py-2 
+                rounded-md bg-red-500 text-center cursor-pointer transition list-none"
+                onClick={() => {
+                  setFilteredProducts(products);
+                }}
+              >
+                Clear Price
+              </li>
+            </div>
           </div>
 
           <div className="productContainer w-[85%]  flex  flex-wrap justify-around gap-4 p-2">
@@ -139,3 +183,8 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
