@@ -1,11 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import { nanoid } from "nanoid";
 
 function App() {
-  const [allContacts, setAllContacts] = useState([]);
+  const [allContacts, setAllContacts] = useState(
+    JSON.parse(localStorage.getItem("allContacts")) || []
+  );
+
   const fileInputRef = useRef();
 
   const [editingId, setEditingId] = useState(null);
@@ -29,7 +32,7 @@ function App() {
             name: contactInfo.name,
             contact: contactInfo.contact,
             email: contactInfo.email,
-            photourl: contactInfo.photourl,
+            photourl: contactInfo.photourl || contact.photourl,
           };
         }
       });
@@ -45,6 +48,7 @@ function App() {
       contact: "",
       email: "",
       id: nanoid(),
+      photourl: null,
     });
 
     if (fileInputRef) {
@@ -75,8 +79,13 @@ function App() {
       name: name,
       contact: contact,
       email: email,
+      photourl: photourl,
     });
   };
+
+  useEffect(() => {
+    localStorage.setItem("allContacts", JSON.stringify(allContacts));
+  }, [allContacts]);
 
   return (
     <>
@@ -142,48 +151,52 @@ function App() {
         </div>
 
         <div className="output w-2/3 pl-4 flex flex-wrap gap-4">
-          {allContacts.map((contact) => (
-            <div
-              className="contactCard flex flex-col items-center h-fit bg-white p-4 rounded-lg shadow-lg w-[30%]
+          {allContacts.length === 0 ? (
+            <h2 className="text-3xl font-[cursive] text-white font-semibold flex justify-center items-center w-full">
+              No Contacts Yet! Add Now 🤩
+            </h2>
+          ) : (
+            allContacts.map((contact) => (
+              <div
+                className="contactCard flex flex-col items-center h-fit bg-white p-6 rounded-lg shadow-lg w-[30%]
                 "
-              key={contact?.id}
-            >
-              <div className="imageSection flex justify-center items-center mb-3">
-                <img
-                  src={contact?.photourl}
-                  alt={contact?.name}
-                  className="h-[100px] w-[100px] object-cover rounded-full border-4 border-indigo-500"
-                />
-              </div>
+                key={contact?.id}
+              >
+                <div className="imageSection flex justify-center items-center mb-3">
+                  <img
+                    src={contact?.photourl}
+                    alt={contact?.name}
+                    className="h-[100px] w-[100px] object-cover rounded-full border-4 border-indigo-500"
+                  />
+                </div>
 
-              <div className="contactDetails flex justify-center items-center flex-col">
-                <p className="font-semibold text-lg">{contact?.name}</p>
-                <p className="text-gray-500">{contact?.email}</p>
-                <p className="text-indigo-600 font-medium flex justify-center items-center gap-2">
-                  <span>{contact?.contact}</span>
-                  <i className="ri-clipboard-line cursor-pointer hover:text-indigo-800"></i>
-                </p>
-              </div>
+                <div className="contactDetails flex justify-center items-center flex-col">
+                  <p className="font-semibold text-lg">{contact?.name}</p>
+                  <p className="text-gray-500">{contact?.email}</p>
+                  <p className="text-indigo-600 font-medium flex justify-center items-center gap-2">
+                    <span>{contact?.contact}</span>
+                    <i className="ri-clipboard-line cursor-pointer hover:text-indigo-800"></i>
+                  </p>
+                </div>
 
-              <div className="functionality flex justify-around items-center w-full mt-3">
-                <button
-                  className="text-red-500 hover:text-red-700 transition-all"
-                  onClick={() => handleDelete(contact?.id)}
-                >
-                  <i className="ri-delete-bin-6-line text-2xl"></i>
-                </button>
+                <div className="functionality flex justify-around items-center w-full mt-3">
+                  <button
+                    className="text-red-500 hover:text-red-700 transition-all"
+                    onClick={() => handleDelete(contact?.id)}
+                  >
+                    <i className="ri-delete-bin-6-line text-2xl"></i>
+                  </button>
 
-                <button
-                  className="text-blue-500 hover:text-blue-700 transition-all"
-                  onClick={() =>
-                    handleEdit(contact)
-                  }
-                >
-                  <i className="ri-pencil-fill text-2xl"></i>
-                </button>
+                  <button
+                    className="text-blue-500 hover:text-blue-700 transition-all"
+                    onClick={() => handleEdit(contact)}
+                  >
+                    <i className="ri-pencil-fill text-2xl"></i>
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </>

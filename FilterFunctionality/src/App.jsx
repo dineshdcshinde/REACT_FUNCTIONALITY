@@ -169,9 +169,6 @@ function App() {
                     </span>
                     ₹{product.price}
                   </p>
-                  <button className="mt-2 bg-[#ff6600] text-white py-1 px-4 rounded hover:bg-[#ff4500]">
-                    Add to Cart
-                  </button>
                 </div>
               </div>
             ))}
@@ -183,8 +180,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
-
